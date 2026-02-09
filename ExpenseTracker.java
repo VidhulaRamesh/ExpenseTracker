@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExpenseTracker {
 
@@ -8,10 +10,9 @@ public class ExpenseTracker {
 
     public ExpenseTracker() {
         transactions = new ArrayList<>();
-        loadFromFile();   // load data when app starts
+        loadFromFile();
     }
 
-    // Add income
     public void addIncome(double amount, String category, String date) {
         Transaction t = new Transaction(amount, "INCOME", category, date);
         transactions.add(t);
@@ -19,7 +20,6 @@ public class ExpenseTracker {
         System.out.println("Income added.");
     }
 
-    // Add expense
     public void addExpense(double amount, String category, String date) {
         Transaction t = new Transaction(amount, "EXPENSE", category, date);
         transactions.add(t);
@@ -27,22 +27,15 @@ public class ExpenseTracker {
         System.out.println("Expense added.");
     }
 
-    // Save single transaction to file
     private void saveToFile(Transaction t) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            bw.write(
-                t.getAmount() + "," +
-                t.getType() + "," +
-                t.getCategory() + "," +
-                t.getDate()
-            );
+            bw.write(t.getAmount() + "," + t.getType() + "," + t.getCategory() + "," + t.getDate());
             bw.newLine();
         } catch (IOException e) {
             System.out.println("Error saving transaction.");
         }
     }
 
-    // Load transactions from file
     private void loadFromFile() {
         File file = new File(FILE_NAME);
         if (!file.exists()) return;
@@ -56,27 +49,24 @@ public class ExpenseTracker {
                 String category = data[2];
                 String date = data[3];
 
-                transactions.add(
-                    new Transaction(amount, type, category, date)
-                );
+                transactions.add(new Transaction(amount, type, category, date));
             }
         } catch (IOException e) {
             System.out.println("Error loading transactions.");
         }
     }
 
-    // Show all transactions
     public void showTransactions() {
         if (transactions.isEmpty()) {
             System.out.println("No transactions found.");
             return;
         }
+
         for (Transaction t : transactions) {
             t.display();
         }
     }
 
-    // Show summary
     public void showSummary() {
         double income = 0, expense = 0;
 
@@ -90,5 +80,35 @@ public class ExpenseTracker {
         System.out.println("Total Income  : ₹" + income);
         System.out.println("Total Expense : ₹" + expense);
         System.out.println("Balance       : ₹" + (income - expense));
+    }
+
+    public void showCategoryReport() {
+
+        HashMap<String, Double> categoryMap = new HashMap<>();
+
+        for (Transaction t : transactions) {
+            if (t.getType().equals("EXPENSE")) {
+
+                String category = t.getCategory();
+                double amount = t.getAmount();
+
+                if (categoryMap.containsKey(category)) {
+                    categoryMap.put(category, categoryMap.get(category) + amount);
+                } else {
+                    categoryMap.put(category, amount);
+                }
+            }
+        }
+
+        System.out.println("\n--- Expense By Category ---");
+
+        if (categoryMap.isEmpty()) {
+            System.out.println("No expense data available.");
+            return;
+        }
+
+        for (Map.Entry<String, Double> entry : categoryMap.entrySet()) {
+            System.out.println(entry.getKey() + " : ₹" + entry.getValue());
+        }
     }
 }
