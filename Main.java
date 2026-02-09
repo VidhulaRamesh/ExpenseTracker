@@ -16,7 +16,8 @@ public class Main {
             System.out.println("3. View All Transactions");
             System.out.println("4. View Summary");
             System.out.println("5. View Category Report");
-            System.out.println("6. Exit");
+            System.out.println("6. View Transactions By Date");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
             choice = sc.nextInt();
@@ -63,16 +64,19 @@ public class Main {
                 case 5:
                     tracker.showCategoryReport();
                     break;
-
                 case 6:
+                    System.out.print("Enter date (dd-mm-yyyy): ");
+                    String searchDate = sc.nextLine();
+                    tracker.showTransactionsByDate(searchDate);
+                    break;
+                case 7:
                     System.out.println("Thank you for using Expense Tracker!");
                     break;
-
                 default:
                     System.out.println("Invalid choice.");
             }
 
-        } while (choice != 6);
+        } while (choice != 7);
 
         sc.close();
     }

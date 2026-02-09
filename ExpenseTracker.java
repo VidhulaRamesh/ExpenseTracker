@@ -111,4 +111,24 @@ public class ExpenseTracker {
             System.out.println(entry.getKey() + " : ₹" + entry.getValue());
         }
     }
+
+    // Date wise transaction filter
+    public void showTransactionsByDate(String searchDate) {
+
+        boolean found = false;
+
+        System.out.println("\n--- Transactions on " + searchDate + " ---");
+
+        for (Transaction t : transactions) {
+
+            if (t.getDate().equals(searchDate)) {
+              t.display();
+              found = true;
+            }
+        }
+
+        if (!found) {
+           System.out.println("No transactions found for this date.");
+        }
+    }
 }
