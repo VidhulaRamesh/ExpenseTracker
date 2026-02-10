@@ -14,18 +14,50 @@ public class ExpenseTracker {
     }
 
     public void addIncome(double amount, String category, String date) {
+
+        if (amount <= 0) {
+           System.out.println("Amount must be greater than 0.");
+           return;
+        }
+        if (category == null || category.trim().isEmpty()) {
+            System.out.println("Category cannot be empty.");
+            return;
+        }
+
+        if (date == null || date.trim().isEmpty()) {
+            System.out.println("Date cannot be empty.");
+            return;
+        }
         Transaction t = new Transaction(amount, "INCOME", category, date);
         transactions.add(t);
         saveToFile(t);
         System.out.println("Income added.");
     }
 
+
     public void addExpense(double amount, String category, String date) {
+
+        if (amount <= 0) {
+           System.out.println("Amount must be greater than 0.");
+           return;
+        }
+
+        if (category == null || category.trim().isEmpty()) {
+            System.out.println("Category cannot be empty.");
+            return;
+        }
+
+        if (date == null || date.trim().isEmpty()) {
+           System.out.println("Date cannot be empty.");
+           return;
+        }
+
         Transaction t = new Transaction(amount, "EXPENSE", category, date);
         transactions.add(t);
         saveToFile(t);
         System.out.println("Expense added.");
     }
+
 
     private void saveToFile(Transaction t) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
