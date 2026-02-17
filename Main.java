@@ -62,12 +62,12 @@ public class Main {
                     break;
 
                 case 5:
-                    tracker.showCategoryReport();
+                    System.out.println(tracker.getCategoryReport());
                     break;
                 case 6:
                     System.out.print("Enter date (dd-mm-yyyy): ");
                     String searchDate = sc.nextLine();
-                    tracker.showTransactionsByDate(searchDate);
+                    System.out.println(tracker.getTransactionsByDate(searchDate));
                     break;
                 case 7:
                     System.out.println("Thank you for using Expense Tracker!");

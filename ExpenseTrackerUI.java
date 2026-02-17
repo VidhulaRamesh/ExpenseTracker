@@ -1,48 +1,70 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class ExpenseTrackerUI {
 
     private ExpenseTracker tracker;
+    private JTextArea outputArea;
 
     public ExpenseTrackerUI() {
 
         tracker = new ExpenseTracker();
 
         JFrame frame = new JFrame("Expense Tracker");
-        frame.setSize(400, 300);
+        frame.setSize(600, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(5, 2, 10, 10));
+        frame.setLayout(new BorderLayout());
 
-        JLabel amountLabel = new JLabel("Amount:");
+        // ===== Input Panel =====
+        JPanel inputPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+
         JTextField amountField = new JTextField();
-
-        JLabel categoryLabel = new JLabel("Category:");
         JTextField categoryField = new JTextField();
-
-        JLabel dateLabel = new JLabel("Date:");
         JTextField dateField = new JTextField();
+
+        inputPanel.add(new JLabel("Amount:"));
+        inputPanel.add(amountField);
+        inputPanel.add(new JLabel("Category:"));
+        inputPanel.add(categoryField);
+        inputPanel.add(new JLabel("Date:"));
+        inputPanel.add(dateField);
+
+        // ===== Button Panel =====
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
 
         JButton incomeButton = new JButton("Add Income");
         JButton expenseButton = new JButton("Add Expense");
+        JButton viewAllButton = new JButton("View All");
+        JButton summaryButton = new JButton("Summary");
+        JButton categoryButton = new JButton("Category Report");
+        JButton dateFilterButton = new JButton("Filter By Date");
 
-        frame.add(amountLabel);
-        frame.add(amountField);
-        frame.add(categoryLabel);
-        frame.add(categoryField);
-        frame.add(dateLabel);
-        frame.add(dateField);
-        frame.add(incomeButton);
-        frame.add(expenseButton);
+        buttonPanel.add(incomeButton);
+        buttonPanel.add(expenseButton);
+        buttonPanel.add(viewAllButton);
+        buttonPanel.add(summaryButton);
+        buttonPanel.add(categoryButton);
+        buttonPanel.add(dateFilterButton);
+
+        // ===== Output Area =====
+        outputArea = new JTextArea();
+        outputArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(outputArea);
+
+        // ===== Add Panels To Frame =====
+        frame.add(inputPanel, BorderLayout.NORTH);
+        frame.add(buttonPanel, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.SOUTH);
+
+        // ===== Button Actions =====
 
         incomeButton.addActionListener(e -> {
             try {
                 double amount = Double.parseDouble(amountField.getText());
                 tracker.addIncome(amount, categoryField.getText(), dateField.getText());
-                JOptionPane.showMessageDialog(frame, "Income Added!");
+                outputArea.setText("Income Added Successfully!\n");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Invalid Input!");
+                outputArea.setText("Invalid Input!\n");
             }
         });
 
@@ -50,11 +72,47 @@ public class ExpenseTrackerUI {
             try {
                 double amount = Double.parseDouble(amountField.getText());
                 tracker.addExpense(amount, categoryField.getText(), dateField.getText());
-                JOptionPane.showMessageDialog(frame, "Expense Added!");
+                outputArea.setText("Expense Added Successfully!\n");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Invalid Input!");
+                outputArea.setText("Invalid Input!\n");
             }
         });
+
+        viewAllButton.addActionListener(e -> {
+            outputArea.setText("");
+            for (Transaction t : tracker.getTransactions()) {
+                outputArea.append(t.getType() + " | "
+                        + t.getCategory() + " | ₹"
+                        + t.getAmount() + " | "
+                        + t.getDate() + "\n");
+            }
+        });
+
+        summaryButton.addActionListener(e -> {
+            outputArea.setText("");
+            double income = 0, expense = 0;
+
+            for (Transaction t : tracker.getTransactions()) {
+                if (t.getType().equals("INCOME"))
+                    income += t.getAmount();
+                else
+                    expense += t.getAmount();
+            }
+
+            outputArea.append("Total Income  : ₹" + income + "\n");
+            outputArea.append("Total Expense : ₹" + expense + "\n");
+            outputArea.append("Balance       : ₹" + (income - expense) + "\n");
+        });
+
+        categoryButton.addActionListener(e -> {
+            outputArea.setText(tracker.getCategoryReport());
+        });
+
+
+        dateFilterButton.addActionListener(e -> {
+            outputArea.setText(tracker.getTransactionsByDate(dateField.getText()));
+        });
+
 
         frame.setVisible(true);
     }

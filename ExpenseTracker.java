@@ -114,53 +114,66 @@ public class ExpenseTracker {
         System.out.println("Balance       : ₹" + (income - expense));
     }
 
-    public void showCategoryReport() {
+    public String getCategoryReport() {
 
         HashMap<String, Double> categoryMap = new HashMap<>();
 
         for (Transaction t : transactions) {
-            if (t.getType().equals("EXPENSE")) {
+           if (t.getType().equals("EXPENSE")) {
+               String category = t.getCategory();
+               double amount = t.getAmount();
 
-                String category = t.getCategory();
-                double amount = t.getAmount();
-
-                if (categoryMap.containsKey(category)) {
-                    categoryMap.put(category, categoryMap.get(category) + amount);
-                } else {
-                    categoryMap.put(category, amount);
-                }
+               categoryMap.put(category,
+                  categoryMap.getOrDefault(category, 0.0) + amount);
             }
         }
 
-        System.out.println("\n--- Expense By Category ---");
-
         if (categoryMap.isEmpty()) {
-            System.out.println("No expense data available.");
-            return;
+            return "No expense data available.";
         }
+
+        StringBuilder report = new StringBuilder("--- Expense By Category ---\n");
 
         for (Map.Entry<String, Double> entry : categoryMap.entrySet()) {
-            System.out.println(entry.getKey() + " : ₹" + entry.getValue());
+            report.append(entry.getKey())
+                .append(" : ₹")
+                .append(entry.getValue())
+                .append("\n");
         }
+
+        return report.toString();
     }
 
+
     // Date wise transaction filter
-    public void showTransactionsByDate(String searchDate) {
+    public String getTransactionsByDate(String searchDate) {
+
+        StringBuilder result = new StringBuilder("--- Transactions on " + searchDate + " ---\n");
 
         boolean found = false;
 
-        System.out.println("\n--- Transactions on " + searchDate + " ---");
-
         for (Transaction t : transactions) {
-
             if (t.getDate().equals(searchDate)) {
-              t.display();
-              found = true;
+                result.append(t.getType())
+                    .append(" | ")
+                    .append(t.getCategory())
+                    .append(" | ₹")
+                    .append(t.getAmount())
+                    .append(" | ")
+                    .append(t.getDate())
+                    .append("\n");
+                found = true;
             }
         }
 
         if (!found) {
-           System.out.println("No transactions found for this date.");
+            return "No transactions found for this date.";
         }
+
+        return result.toString();
+    }
+
+    public ArrayList<Transaction> getTransactions() {
+        return transactions;
     }
 }
