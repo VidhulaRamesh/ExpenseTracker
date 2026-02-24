@@ -1,5 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 
 public class ExpenseTrackerUI {
 
@@ -105,8 +109,47 @@ public class ExpenseTrackerUI {
         });
 
         categoryButton.addActionListener(e -> {
-            outputArea.setText(tracker.getCategoryReport());
-        });
+
+            DefaultPieDataset dataset = new DefaultPieDataset();
+
+            for (Transaction t : tracker.getTransactions()) {
+
+            if (t.getType().equals("EXPENSE")) {
+
+                String category = t.getCategory();
+                double amount = t.getAmount();
+
+                try {
+                    Number existing = dataset.getValue(category);
+                    dataset.setValue(category, existing.doubleValue() + amount);
+                } catch (Exception ex) {
+                    dataset.setValue(category, amount);
+                }
+            }
+        }
+
+        if (dataset.getItemCount() == 0) {
+            JOptionPane.showMessageDialog(null, "No expense data available.");
+            return;
+        }
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Expense Distribution",
+                dataset,
+                true,
+                true,
+                false
+        );
+
+       ChartPanel chartPanel = new ChartPanel(chart);
+       chartPanel.setPreferredSize(new Dimension(500, 400));
+
+       JFrame chartFrame = new JFrame("Expense Analytics");
+       chartFrame.setContentPane(chartPanel);
+       chartFrame.pack();
+       chartFrame.setLocationRelativeTo(null);
+       chartFrame.setVisible(true);
+    });
 
 
         dateFilterButton.addActionListener(e -> {
