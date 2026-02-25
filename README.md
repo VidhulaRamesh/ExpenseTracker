@@ -1,52 +1,125 @@
-# Expense Tracker (Java)
+# 💰 FinSight – Smart Expense Analytics & Financial Planning System
 
-A console-based Expense Tracker application built using **Core Java** and **Object-Oriented Programming (OOPS)** concepts.  
-This project helps users track their income and expenses, view all transactions, and see a financial summary.
+FinSight is a Java-based desktop financial analytics application that helps users track income and expenses, visualize spending patterns, and generate AI-powered financial management plans.
 
 ---
 
 ## 🚀 Features
-- Add Income
-- Add Expense
-- View all transactions
-- View total income, total expense, and balance
-- Menu-driven console application
+
+### 📊 Expense Tracking
+- Add income and expenses
+- Categorize transactions
+- Date-based filtering
+- Persistent storage using file handling
+
+### 📈 Analytics & Visualization
+- Category-wise expense distribution (Pie Chart using JFreeChart)
+- Summary view (Total Income, Total Expense, Balance)
+- Scrollable transaction reports
+
+### 🧠 AI Financial Advisor
+- Accepts monthly salary input
+- Calculates total expenses and savings
+- Computes savings percentage
+- Provides intelligent management suggestions
+- Identifies high-spending categories
 
 ---
 
-## 🛠 Technologies Used
-- Java
-- OOPS concepts
-- ArrayList
-- Scanner
-- Git & GitHub
+## 🏗 Tech Stack
+
+- **Java**
+- **Java Swing (GUI)**
+- **JFreeChart (Data Visualization)**
+- **File Handling (BufferedReader / BufferedWriter)**
+- **OOP Principles**
 
 ---
 
-## 🧠 OOPS Concepts Used
+## 🧩 Project Architecture
 
-### 1. Encapsulation
-- All data members in the `Transaction` class are **private**
-- Accessed only through public getter methods
-
-### 2. Abstraction
-- User interacts with simple methods like `addIncome()` and `addExpense()`
-- Internal logic is hidden from the user
-
-### 3. Classes & Objects
-- `Transaction` class represents a single transaction
-- Multiple `Transaction` objects are stored using `ArrayList`
-
-### 4. Separation of Concerns
-- `Transaction.java` → Data model
-- `ExpenseTracker.java` → Business logic
-- `Main.java` → User interaction
+```
+UI Layer (ExpenseTrackerUI.java)
+        ↓
+Business Logic (ExpenseTracker.java)
+        ↓
+AI Advisor Module (FinancialAdvisor.java)
+        ↓
+Data Model (Transaction.java)
+        ↓
+File Storage (transactions.txt)
+```
 
 ---
 
-## 📁 Project Structure
-  ExpenseTracker/
-│
-├── Main.java
-├── Transaction.java
-├── ExpenseTracker.java
+## 📊 Sample Functionalities
+
+✔ Add income & expenses  
+✔ View summary report  
+✔ Filter transactions by date  
+✔ View category distribution pie chart  
+✔ Generate AI-based financial management plan  
+
+---
+
+## 🎯 AI Advisor Logic
+
+The AI module analyzes:
+
+- Total expenses
+- Savings amount
+- Savings percentage
+- Category spending ratio
+
+Based on these, it provides:
+- Low savings warnings
+- Spending optimization suggestions
+- Investment recommendations
+
+---
+
+## 🛠 How to Run
+
+### 1️⃣ Compile (Windows)
+
+```bash
+javac -cp ".;jfreechart-1.0.19.jar;jcommon-1.0.23.jar" *.java
+```
+
+### 2️⃣ Run
+
+```bash
+java -cp ".;jfreechart-1.0.19.jar;jcommon-1.0.23.jar" ExpenseTrackerUI
+```
+
+---
+
+## 📌 Future Enhancements
+
+- Monthly spending trend line chart
+- PDF report export
+- Database integration (MySQL)
+- Web-based version (Full Stack)
+- ML-based expense prediction
+
+---
+
+## 👩‍💻 Author
+
+**Vidhula Ramesh**
+
+---
+
+## ⭐ Project Highlights
+
+This project demonstrates:
+
+- Object-Oriented Programming
+- Event-Driven GUI Development
+- Data Aggregation & Visualization
+- Rule-Based AI System
+- Clean Layered Architecture
+
+---
+
+> Built as a portfolio-level desktop financial analytics system.
