@@ -14,8 +14,8 @@ public class ExpenseTrackerUI {
 
         tracker = new ExpenseTracker();
 
-        JFrame frame = new JFrame("Expense Tracker");
-        frame.setSize(600, 500);
+        JFrame frame = new JFrame("Smart Expense Tracker");
+        frame.setSize(650, 550);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
@@ -34,14 +34,15 @@ public class ExpenseTrackerUI {
         inputPanel.add(dateField);
 
         // ===== Button Panel =====
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 10, 10));
 
         JButton incomeButton = new JButton("Add Income");
         JButton expenseButton = new JButton("Add Expense");
         JButton viewAllButton = new JButton("View All");
         JButton summaryButton = new JButton("Summary");
-        JButton categoryButton = new JButton("Category Report");
+        JButton categoryButton = new JButton("Show Pie Chart");
         JButton dateFilterButton = new JButton("Filter By Date");
+        JButton advisorButton = new JButton("Get AI Plan");
 
         buttonPanel.add(incomeButton);
         buttonPanel.add(expenseButton);
@@ -49,6 +50,7 @@ public class ExpenseTrackerUI {
         buttonPanel.add(summaryButton);
         buttonPanel.add(categoryButton);
         buttonPanel.add(dateFilterButton);
+        buttonPanel.add(advisorButton);
 
         // ===== Output Area =====
         outputArea = new JTextArea();
@@ -85,10 +87,12 @@ public class ExpenseTrackerUI {
         viewAllButton.addActionListener(e -> {
             outputArea.setText("");
             for (Transaction t : tracker.getTransactions()) {
-                outputArea.append(t.getType() + " | "
-                        + t.getCategory() + " | ₹"
-                        + t.getAmount() + " | "
-                        + t.getDate() + "\n");
+                outputArea.append(
+                        t.getType() + " | "
+                                + t.getCategory() + " | ₹"
+                                + t.getAmount() + " | "
+                                + t.getDate() + "\n"
+                );
             }
         });
 
@@ -108,54 +112,70 @@ public class ExpenseTrackerUI {
             outputArea.append("Balance       : ₹" + (income - expense) + "\n");
         });
 
+        // ===== Pie Chart =====
         categoryButton.addActionListener(e -> {
 
             DefaultPieDataset dataset = new DefaultPieDataset();
 
             for (Transaction t : tracker.getTransactions()) {
+                if (t.getType().equals("EXPENSE")) {
 
-            if (t.getType().equals("EXPENSE")) {
+                    String category = t.getCategory();
+                    double amount = t.getAmount();
 
-                String category = t.getCategory();
-                double amount = t.getAmount();
-
-                try {
-                    Number existing = dataset.getValue(category);
-                    dataset.setValue(category, existing.doubleValue() + amount);
-                } catch (Exception ex) {
-                    dataset.setValue(category, amount);
+                    try {
+                        Number existing = dataset.getValue(category);
+                        dataset.setValue(category, existing.doubleValue() + amount);
+                    } catch (Exception ex) {
+                        dataset.setValue(category, amount);
+                    }
                 }
             }
-        }
 
-        if (dataset.getItemCount() == 0) {
-            JOptionPane.showMessageDialog(null, "No expense data available.");
-            return;
-        }
+            if (dataset.getItemCount() == 0) {
+                JOptionPane.showMessageDialog(null, "No expense data available.");
+                return;
+            }
 
-        JFreeChart chart = ChartFactory.createPieChart(
-                "Expense Distribution",
-                dataset,
-                true,
-                true,
-                false
-        );
+            JFreeChart chart = ChartFactory.createPieChart(
+                    "Expense Distribution",
+                    dataset,
+                    true,
+                    true,
+                    false
+            );
 
-       ChartPanel chartPanel = new ChartPanel(chart);
-       chartPanel.setPreferredSize(new Dimension(500, 400));
+            ChartPanel chartPanel = new ChartPanel(chart);
+            chartPanel.setPreferredSize(new Dimension(500, 400));
 
-       JFrame chartFrame = new JFrame("Expense Analytics");
-       chartFrame.setContentPane(chartPanel);
-       chartFrame.pack();
-       chartFrame.setLocationRelativeTo(null);
-       chartFrame.setVisible(true);
-    });
+            JFrame chartFrame = new JFrame("Expense Analytics");
+            chartFrame.setContentPane(chartPanel);
+            chartFrame.pack();
+            chartFrame.setLocationRelativeTo(null);
+            chartFrame.setVisible(true);
+        });
 
-
+        // ===== Date Filter =====
         dateFilterButton.addActionListener(e -> {
             outputArea.setText(tracker.getTransactionsByDate(dateField.getText()));
         });
 
+        // ===== AI Financial Advisor =====
+        advisorButton.addActionListener(e -> {
+
+            String salaryInput = JOptionPane.showInputDialog("Enter your monthly salary:");
+
+            try {
+                double salary = Double.parseDouble(salaryInput);
+
+                String plan = FinancialAdvisor.generatePlan(tracker, salary);
+
+                outputArea.setText(plan);
+
+            } catch (Exception ex) {
+                outputArea.setText("Invalid salary input.");
+            }
+        });
 
         frame.setVisible(true);
     }
